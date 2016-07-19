@@ -1,6 +1,0 @@
-this is a test
-testing testing testing
-there should be no spaces after this line
-
-the line above is all spaces and not just a new line
-two spaces after this one
