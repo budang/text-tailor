@@ -1,7 +1,9 @@
+#!/usr/bin/env node
+
 (function() {
 	var args = process.argv.slice(2);
 
-	if(!args || args.length > 1)
+	if(args.length !== 1)
 		throw new Error("Invalid argument(s)");
 
 	console.log('Running...')

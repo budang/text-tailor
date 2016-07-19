@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/budang/text-tailor#readme",
   "bin": {
-    "text-tailor": "./bin/text-tailor.js"
+    "text-tailor": "./text-tailor.js"
   }
 }
