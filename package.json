@@ -1,0 +1,32 @@
+{
+  "name": "text-tailor",
+  "version": "1.0.0",
+  "description": "Trims trailing spaces after each line and trims leading and trailing newlines in a file",
+  "main": "text-tailor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/budang/text-tailor.git"
+  },
+  "keywords": [
+    "text-tailor",
+    "tailor",
+    "trail",
+    "trailing",
+    "code-quality",
+    "trim",
+    "whitespace",
+    "newline"
+  ],
+  "author": "budang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/budang/text-tailor/issues"
+  },
+  "homepage": "https://github.com/budang/text-tailor#readme",
+  "bin": {
+    "text-tailor": "./bin/text-tailor.js"
+  }
+}
