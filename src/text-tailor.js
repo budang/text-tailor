@@ -1,17 +1,8 @@
 #!/usr/bin/env node
 "use strict";
-
-(() => {
-  let args = process.argv.slice(2);
-
-  if (args.length !== 1) {
-    throw new Error("Invalid argument(s)");
-  }
-
-  console.log('Running...')
-
-  let file = args[0];
-  console.log('Evaluating ' + file + '...');
+  
+let trimFile = (file) => {
+	console.log('Evaluating ' + file + '...');
 
   let lines = [];
 
@@ -52,4 +43,18 @@
       console.log('Done!');
     })
   });
-})();
+}
+
+let main = () => {
+	let args = process.argv.slice(2);
+	if (args.length !== 1) {
+	  throw new Error("Invalid argument(s)");
+	}
+
+	console.log('Running...')
+
+	let file = args[0];
+	trimFile(file);
+}
+
+main();
