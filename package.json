@@ -4,7 +4,8 @@
   "description": "Trims trailing spaces after each line and trims leading and trailing newlines in a file",
   "main": "./src/text-tailor.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint ./src"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,9 @@
   },
   "homepage": "https://github.com/budang/text-tailor#readme",
   "bin": {
-    "text-tailor": "./text-tailor.js"
+    "text-tailor": "./src/text-tailor.js"
+  },
+  "devDependencies": {
+    "eslint": "^3.1.1"
   }
 }

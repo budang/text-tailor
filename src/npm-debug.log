@@ -1,0 +1,28 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'link' ]
+2 info using npm@3.10.5
+3 info using node@v5.4.1
+4 verbose linkPkg /home/uyvu/Desktop/text-tailor
+5 silly gentlyRm /usr/local/lib/node_modules/text-tailor is being purged
+6 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/text-tailor
+7 silly vacuum-fs purging /usr/local/lib/node_modules/text-tailor
+8 verbose stack Error: EACCES: permission denied, unlink '/usr/local/lib/node_modules/text-tailor'
+8 verbose stack     at Error (native)
+9 verbose cwd /home/uyvu/Desktop/text-tailor/src
+10 error Linux 3.13.0-92-generic
+11 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "link"
+12 error node v5.4.1
+13 error npm  v3.10.5
+14 error path /usr/local/lib/node_modules/text-tailor
+15 error code EACCES
+16 error errno -13
+17 error syscall unlink
+18 error Error: EACCES: permission denied, unlink '/usr/local/lib/node_modules/text-tailor'
+18 error     at Error (native)
+18 error  { [Error: EACCES: permission denied, unlink '/usr/local/lib/node_modules/text-tailor']
+18 error   errno: -13,
+18 error   code: 'EACCES',
+18 error   syscall: 'unlink',
+18 error   path: '/usr/local/lib/node_modules/text-tailor' }
+19 error Please try running this command again as root/Administrator.
+20 verbose exit [ -13, true ]
