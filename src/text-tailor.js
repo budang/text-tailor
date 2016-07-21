@@ -17,8 +17,9 @@ let trimFile = (file) => {
     // trim trailing spaces
     if (line.endsWith(' ')) {
       let i = line.length - 1;
-      while(line[i] === ' ' && i > -1)
+      while(line[i] === ' ' && i > -1) {
         i--;
+      }
       line = line.substring(0, i + 1);
     }
 
@@ -26,11 +27,13 @@ let trimFile = (file) => {
   }).on('close', () => {
     let i = 0, j = lines.length - 1;
     // trim leading newlines
-    while (lines[i] === '' && i < lines.length + 1)
+    while (lines[i] === '' && i < lines.length + 1) {
       i++;
+    }
     // trim trailing newlines
-    while (lines[j] === '' && j > -1)
+    while (lines[j] === '' && j > -1) {
       j--;
+    }
     lines = lines.slice(i, j + 1);
 
     let text = lines.join('\n');
