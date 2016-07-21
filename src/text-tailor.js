@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 "use strict";
-  
+
 let trimFile = (file) => {
 	console.log('Evaluating ' + file + '...');
 
@@ -48,7 +48,7 @@ let trimFile = (file) => {
 let main = () => {
 	let args = process.argv.slice(2);
 	if (args.length !== 1) {
-	  throw new Error("Invalid argument(s)");
+		throw new Error("Invalid argument(s)");
 	}
 
 	console.log('Running...')
