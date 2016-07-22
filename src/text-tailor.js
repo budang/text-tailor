@@ -38,26 +38,28 @@ let trimFile = (file) => {
 
     let text = lines.join('\n');
 
-    console.log('Writing content to ' + file + '...');
     fs.writeFile(file, text, (err) => {
       if (err) {
         console.log(err);
       }
-      console.log('Done!');
     })
   });
 }
 
 let main = () => {
-	let args = process.argv.slice(2);
-	if (args.length !== 1) {
-		throw new Error("Invalid argument(s)");
+	let files = process.argv.slice(2);
+
+	if (!files.length) {
+		throw new Error("Insufficient argument(s)");
 	}
 
 	console.log('Running...')
 
-	let file = args[0];
-	trimFile(file);
+	for (let file of files) {
+		trimFile(file);	
+	}
+  
+  console.log('Done!');
 }
 
 main();
