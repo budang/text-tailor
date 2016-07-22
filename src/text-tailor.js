@@ -41,6 +41,8 @@ let trimFile = (file) => {
     fs.writeFile(file, text, (err) => {
       if (err) {
         console.log(err);
+      } else {
+      	console.log('Evaluation for ' + file + ' successful!')
       }
     })
   });
@@ -56,10 +58,15 @@ let main = () => {
 	console.log('Running...')
 
 	for (let file of files) {
-		trimFile(file);	
+		let fs = require('fs');
+		fs.stat(file, (err, stats) => {
+			if (err) {
+				console.log('ERROR: ' + file + ' is not a file.')
+			} else if (stats.isFile(file)) {
+				trimFile(file);
+			}
+		});
 	}
-  
-  console.log('Done!');
 }
 
 main();
