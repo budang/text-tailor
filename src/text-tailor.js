@@ -39,11 +39,11 @@ let trimFile = (file) => {
 
     let text = lines.join('\n');
 
-    fs.writeFile(file, text, (err) => {
-      if (err) {
-        console.log(err);
+    fs.writeFile(file, text, (statErr) => {
+      if (statErr) {
+        console.log(statErr);
       } else {
-      	console.log('Evaluation for ' + file + ' successful!')
+        console.log('Evaluation for ' + file + ' successful!')
       }
     })
   });
@@ -52,15 +52,15 @@ let trimFile = (file) => {
 let trimFilesInDir = (dir) => {
 	// normalize input strings
   if (!dir.endsWith('/')) {
-  	dir += '/';
+    dir += '/';
   }
 
-  fs.readdir(dir, (err, files) => {
-    if (!err) {
+  fs.readdir(dir, (readdirErr, files) => {
+    if (!readdirErr) {
       for (let file of files) {
         let path = dir + file;
-        fs.stat(path, (err, stats) => {
-					if (err) {
+        fs.stat(path, (statErr, stats) => {
+					if (statErr) {
 						console.log('ERROR: ' + path + ' could not be found.');
 					} else if (stats.isFile(path)) {
 						trimFile(path);
@@ -85,8 +85,8 @@ let main = () => {
 	console.log('Running...')
 
 	for (let path of args) {
-		fs.stat(path, (err, stats) => {
-			if (err) {
+		fs.stat(path, (statErr, stats) => {
+			if (statErr) {
 				console.log('ERROR: ' + path + ' could not be found.');
 			} else if (stats.isFile(path)) {
 				trimFile(path);
