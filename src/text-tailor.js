@@ -53,7 +53,7 @@ let trimFilesInDir = (dir) => {
 
   fs.readdir(dir, (err, files) => {
     if (err) {
-      console.log('Directory ' + dir + ' not found.');
+
     } else {
       for (let file in files) {
         trimFile(file);
@@ -63,21 +63,26 @@ let trimFilesInDir = (dir) => {
 }
 
 let main = () => {
-	let files = process.argv.slice(2);
+	let args = process.argv.slice(2);
 
-	if (!files.length) {
+	if (!args.length) {
 		throw new Error("Insufficient argument(s)");
 	}
 
 	console.log('Running...')
 
-	for (let file of files) {
+	for (let path of args) {
 		let fs = require('fs');
-		fs.stat(file, (err, stats) => {
+		
+		fs.stat(path, (err, stats) => {
 			if (err) {
-				console.log('ERROR: ' + file + ' is not a file.')
-			} else if (stats.isFile(file)) {
-				trimFile(file);
+				console.log('ERROR: ' + path + ' could not be found.');
+			} else if (stats.isFile(path)) {
+				trimFile(path);
+			} else if (stats.isDirectory(path)) {
+				trimFilesinDir(path);
+			} else {
+				console.log('ERROR: ' + path + ' could not be found.');
 			}
 		});
 	}
