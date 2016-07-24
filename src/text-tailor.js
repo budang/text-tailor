@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 "use strict";
 
+let fs = require('fs');
+
 let trimFile = (file) => {
 	console.log('Evaluating ' + file + '...');
 
   let lines = [];
 
-  let lineReader = require('readline'),
-    fs = require('fs');
+  let lineReader = require('readline');
 
   lineReader = lineReader.createInterface({
     input: require('fs').createReadStream(file)
@@ -49,8 +50,7 @@ let trimFile = (file) => {
 }
 
 let trimFilesInDir = (dir) => {
-  let fs = require('fs');
-
+	// normalize input strings
   if (!dir.endsWith('/')) {
   	dir += '/';
   }
@@ -58,7 +58,18 @@ let trimFilesInDir = (dir) => {
   fs.readdir(dir, (err, files) => {
     if (!err) {
       for (let file of files) {
-        trimFile(dir + file);
+        let path = dir + file;
+        fs.stat(path, (err, stats) => {
+					if (err) {
+						console.log('ERROR: ' + path + ' could not be found.');
+					} else if (stats.isFile(path)) {
+						trimFile(path);
+					} else if (stats.isDirectory(path)) {
+						// trimFilesInDir(path);
+					} else {
+						console.log('ERROR: ' + path + ' could not be found.');
+					}
+				});
       }
     }
   });
@@ -74,8 +85,6 @@ let main = () => {
 	console.log('Running...')
 
 	for (let path of args) {
-		let fs = require('fs');
-		
 		fs.stat(path, (err, stats) => {
 			if (err) {
 				console.log('ERROR: ' + path + ' could not be found.');
