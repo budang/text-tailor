@@ -17,8 +17,9 @@ let trimFile = (file) => {
     // trim trailing spaces
     if (line.endsWith(' ')) {
       let i = line.length - 1;
-      while(line[i] === ' ' && i > -1)
+      while(line[i] === ' ' && i > -1) {
         i--;
+      }
       line = line.substring(0, i + 1);
     }
 
@@ -26,21 +27,23 @@ let trimFile = (file) => {
   }).on('close', () => {
     let i = 0, j = lines.length - 1;
     // trim leading newlines
-    while (lines[i] === '' && i < lines.length + 1)
+    while (lines[i] === '' && i < lines.length + 1) {
       i++;
+    }
     // trim trailing newlines
-    while (lines[j] === '' && j > -1)
+    while (lines[j] === '' && j > -1) {
       j--;
+    }
     lines = lines.slice(i, j + 1);
 
     let text = lines.join('\n');
 
-    console.log('Writing content to ' + file + '...');
     fs.writeFile(file, text, (err) => {
       if (err) {
         console.log(err);
+      } else {
+      	console.log('Evaluation for ' + file + ' successful!')
       }
-      console.log('Done!');
     })
   });
 }
@@ -60,15 +63,24 @@ let trimFilesInDir = (dir) => {
 }
 
 let main = () => {
-	let args = process.argv.slice(2);
-	if (args.length !== 1) {
-		throw new Error("Invalid argument(s)");
+	let files = process.argv.slice(2);
+
+	if (!files.length) {
+		throw new Error("Insufficient argument(s)");
 	}
 
 	console.log('Running...')
 
-	let file = args[0];
-	trimFile(file);
+	for (let file of files) {
+		let fs = require('fs');
+		fs.stat(file, (err, stats) => {
+			if (err) {
+				console.log('ERROR: ' + file + ' is not a file.')
+			} else if (stats.isFile(file)) {
+				trimFile(file);
+			}
+		});
+	}
 }
 
 main();
