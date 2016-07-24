@@ -66,8 +66,6 @@ let trimFilesInDir = (dir) => {
 						trimFile(path);
 					} else if (stats.isDirectory(path)) {
 						// trimFilesInDir(path);
-					} else {
-						console.log('ERROR: ' + path + ' could not be found.');
 					}
 				});
       }
@@ -92,8 +90,6 @@ let main = () => {
 				trimFile(path);
 			} else if (stats.isDirectory(path)) {
 				trimFilesInDir(path);
-			} else {
-				console.log('ERROR: ' + path + ' could not be found.');
 			}
 		});
 	}
