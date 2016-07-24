@@ -9,3 +9,6 @@ npm install text-tailor -g
 ```
 text-tailor ./path/to/somefile.txt
 ```
+```
+text-tailor ./path/to/somefile1.txt ./path/to/somefile2.txt ... ./path/to/somefileN.txt
+```
