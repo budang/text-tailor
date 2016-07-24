@@ -51,12 +51,14 @@ let trimFile = (file) => {
 let trimFilesInDir = (dir) => {
   let fs = require('fs');
 
-  fs.readdir(dir, (err, files) => {
-    if (err) {
+  if (!dir.endsWith('/')) {
+  	dir += '/';
+  }
 
-    } else {
-      for (let file in files) {
-        trimFile(file);
+  fs.readdir(dir, (err, files) => {
+    if (!err) {
+      for (let file of files) {
+        trimFile(dir + file);
       }
     }
   });
@@ -80,7 +82,7 @@ let main = () => {
 			} else if (stats.isFile(path)) {
 				trimFile(path);
 			} else if (stats.isDirectory(path)) {
-				trimFilesinDir(path);
+				trimFilesInDir(path);
 			} else {
 				console.log('ERROR: ' + path + ' could not be found.');
 			}
