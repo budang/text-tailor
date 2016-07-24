@@ -45,6 +45,20 @@ let trimFile = (file) => {
   });
 }
 
+let trimFilesInDir = (dir) => {
+  let fs = require('fs');
+
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.log('Directory ' + dir + ' not found.');
+    } else {
+      for (let file in files) {
+        trimFile(file);
+      }
+    }
+  });
+}
+
 let main = () => {
 	let args = process.argv.slice(2);
 	if (args.length !== 1) {
