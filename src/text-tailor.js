@@ -3,6 +3,11 @@
 
 let fs = require('fs');
 
+/**
+ * Trims a file of trailing whitespaces and leading and trailing newlines.
+ * @param {string} file - The name of the file to be evaluated.
+ * @requires readline
+ */
 let trimFile = (file) => {
 	console.log('Evaluating ' + file + '...');
 
@@ -39,6 +44,7 @@ let trimFile = (file) => {
 
     let text = lines.join('\n');
 
+    // overwrtie original file with trimmed contents
     fs.writeFile(file, text, (statErr) => {
       if (statErr) {
         console.log(statErr);
@@ -49,12 +55,18 @@ let trimFile = (file) => {
   });
 }
 
+/**
+ * Trims files in a directory and its subdirectories.
+ * @param {string} file - The name of the file to be evaluated.
+ * @param {boolean} recurse - If files in the subdirectories should be evaluated.
+ */
 let trimFilesInDir = (dir, recurse) => {
 	// normalize input strings
   if (!dir.endsWith('/')) {
     dir += '/';
   }
 
+  // read files and subdirectories
   fs.readdir(dir, (readdirErr, files) => {
     if (!readdirErr) {
       for (let file of files) {
@@ -73,6 +85,9 @@ let trimFilesInDir = (dir, recurse) => {
   });
 }
 
+/**
+ * Evaluates individual files and files in directories and subdirectories.
+ */
 let main = () => {
 	let args = process.argv.slice(2);
 
