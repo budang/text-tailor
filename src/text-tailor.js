@@ -3,9 +3,6 @@
 
 let fs = require('fs');
 
-// recursive flag
-let r = false;
-
 let trimFile = (file) => {
 	console.log('Evaluating ' + file + '...');
 
@@ -52,7 +49,7 @@ let trimFile = (file) => {
   });
 }
 
-let trimFilesInDir = (dir) => {
+let trimFilesInDir = (dir, recurse) => {
 	// normalize input strings
   if (!dir.endsWith('/')) {
     dir += '/';
@@ -67,7 +64,7 @@ let trimFilesInDir = (dir) => {
 						console.log('ERROR: ' + path + ' could not be found.');
 					} else if (stats.isFile(path)) {
 						trimFile(path);
-					} else if (stats.isDirectory(path) && r) {
+					} else if (stats.isDirectory(path) && recurse) {
 						trimFilesInDir(path);
 					}
 				});
@@ -83,8 +80,8 @@ let main = () => {
 		throw new Error("Insufficient argument(s)");
 	}
 
-	// set recursive flag
-	r = args.indexOf('-r') > -1;
+	// recursive flag
+	let r = args.indexOf('-r') > -1;
 
 	console.log('Running...')
 
@@ -96,7 +93,7 @@ let main = () => {
 				} else if (stats.isFile(path)) {
 					trimFile(path);
 				} else if (stats.isDirectory(path)) {
-					trimFilesInDir(path);
+					trimFilesInDir(path, r);
 				}
 			});
 		}
