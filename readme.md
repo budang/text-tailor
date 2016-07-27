@@ -8,11 +8,11 @@ npm install text-tailor -g
 ## Example Uses
 For a single file:
 ```
-text-tailor ./path/to/somefile.txt
+text-tailor ./path/to/file.txt
 ```
 For multiple files:
 ```
-text-tailor ./path/to/somefile1.txt ./path/to/somefile2.txt ... ./path/to/somefileN.txt
+text-tailor ./path/to/file1.txt ./path/to/file2.txt ... ./path/to/fileN.txt
 ```
 For a single directory, non-recursively:
 ```
