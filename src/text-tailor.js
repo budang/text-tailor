@@ -44,7 +44,7 @@ let trimFile = (file) => {
 
     let text = lines.join('\n');
 
-    // overwrtie original file with trimmed contents
+    // overwrite original file with trimmed contents
     fs.writeFile(file, text, (statErr) => {
       if (statErr) {
         console.log(statErr);
