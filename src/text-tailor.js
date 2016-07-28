@@ -10,7 +10,7 @@ let fs = require('fs');
  * @returns {void}
  */
 let trimFile = (file) => {
-	console.log('Evaluating ' + file + '...');
+  console.log('Evaluating ' + file + '...');
 
   let lines = [];
 
@@ -63,7 +63,7 @@ let trimFile = (file) => {
  * @returns {void}
  */
 let trimFilesInDir = (dir, recurse) => {
-	// normalize input strings
+  // normalize input strings
   if (!dir.endsWith('/')) {
     dir += '/';
   }
@@ -74,14 +74,14 @@ let trimFilesInDir = (dir, recurse) => {
       for (let file of files) {
         let path = dir + file;
         fs.stat(path, (statErr, stats) => {
-					if (statErr) {
-						console.log('ERROR: ' + path + ' could not be found.');
-					} else if (stats.isFile(path)) {
-						trimFile(path);
-					} else if (stats.isDirectory(path) && recurse) {
-						trimFilesInDir(path);
-					}
-				});
+          if (statErr) {
+            console.log('ERROR: ' + path + ' could not be found.');
+          } else if (stats.isFile(path)) {
+            trimFile(path);
+          } else if (stats.isDirectory(path) && recurse) {
+            trimFilesInDir(path);
+          }
+        });
       }
     }
   });
@@ -92,30 +92,30 @@ let trimFilesInDir = (dir, recurse) => {
  * @returns {void}
  */
 let main = () => {
-	let args = process.argv.slice(2);
+  let args = process.argv.slice(2);
 
-	if (!args.length || (args.length === 1 && args[0] === '-r')) {
-		throw new Error("Insufficient argument(s)");
-	}
+  if (!args.length || (args.length === 1 && args[0] === '-r')) {
+    throw new Error("Insufficient argument(s)");
+  }
 
-	// recursive flag
-	let r = args.indexOf('-r') > -1;
+  // recursive flag
+  let r = args.indexOf('-r') > -1;
 
-	console.log('Running...')
+  console.log('Running...');
 
-	for (let path of args) {
-		if (path !== '-r') {
-			fs.stat(path, (statErr, stats) => {
-				if (statErr) {
-					console.log('ERROR: ' + path + ' could not be found.');
-				} else if (stats.isFile(path)) {
-					trimFile(path);
-				} else if (stats.isDirectory(path)) {
-					trimFilesInDir(path, r);
-				}
-			});
-		}
-	}
+  for (let path of args) {
+    if (path !== '-r') {
+      fs.stat(path, (statErr, stats) => {
+        if (statErr) {
+          console.log('ERROR: ' + path + ' could not be found.');
+        } else if (stats.isFile(path)) {
+          trimFile(path);
+        } else if (stats.isDirectory(path)) {
+          trimFilesInDir(path, r);
+        }
+      });
+    }
+  }
 }
 
 main();
