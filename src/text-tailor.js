@@ -85,12 +85,9 @@ let main = () => {
 
         walker.on('file', (path, stat, next) => {
           // normalize path strings
-          let filepath = path;
-          if (!path.endsWith('/')) {
-            filepath += '/';
-          }
+          let filepath = (path + '/' + stat.name).replace('//', '/');
 
-          trimFile(filepath + stat.name);
+          trimFile(filepath);
           next();
         });
 
@@ -98,9 +95,8 @@ let main = () => {
           next();
         });
 
-        walker.on('error', (path, err, next) => {
-          console.log("ERRORSSSSSSSSS")
-          console.log(err);
+        walker.on('nodeError', (path, err, next) => {
+          console.log(err.error);
           next();
         });
 
