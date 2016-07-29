@@ -9,7 +9,7 @@ let fs = require('fs');
  * @requires readline
  * @returns {void}
  */
-let trimFile = (file) => {
+let trimFile = (file, asyncCallback) => {
   console.log('Evaluating ' + file + '...');
 
   let lines = [];
@@ -49,8 +49,10 @@ let trimFile = (file) => {
     fs.writeFile(file, text, (statErr) => {
       if (statErr) {
         console.log(statErr);
+        asyncCallback();
       } else {
-        console.log('Evaluation for ' + file + ' successful!')
+        console.log('Evaluation for ' + file + ' successful!');
+        asyncCallback();
       }
     })
   });
@@ -62,7 +64,7 @@ let trimFile = (file) => {
  * @param {boolean} recurse - If files in subdirectories should be evaluated.
  * @returns {void}
  */
-let trimFilesInDir = (dir, recurse) => {
+let trimFilesInDir = (dir, recurse, asyncCallback) => {
   // normalize input strings
   if (!dir.endsWith('/')) {
     dir += '/';
@@ -77,9 +79,9 @@ let trimFilesInDir = (dir, recurse) => {
           if (statErr) {
             console.log('ERROR: ' + path + ' could not be found.');
           } else if (stats.isFile(path)) {
-            trimFile(path);
+            trimFile(path, asyncCallback);
           } else if (stats.isDirectory(path) && recurse) {
-            trimFilesInDir(path);
+            trimFilesInDir(path, asyncCallback);
           }
         });
       }
@@ -108,8 +110,9 @@ let main = () => {
 
   let calls = [];
 
+  // async callback
   let cb = () => {
-  	console.log('something finished');
+  	return;
   }
 
   for (let path of args) {
@@ -119,11 +122,11 @@ let main = () => {
 	        if (statErr) {
 	          console.log('ERROR: ' + path + ' could not be found.');
 	        } else if (stats.isFile(path)) {
-	          trimFile(path);
+	          trimFile(path, cb);
 	        } else if (stats.isDirectory(path)) {
-	          trimFilesInDir(path, r);
+	          trimFilesInDir(path, r, cb);
 	        }
-	        cb();
+	        ;
 	      });
     	});
     }
@@ -136,7 +139,6 @@ let main = () => {
   	} else {
   		console.log(result);
   		console.log('xxxxxxxxxxxxxxxxxxxxxx');
-  		console.log('Done');
   	}
   });
 }
