@@ -89,6 +89,7 @@ let trimFilesInDir = (dir, recurse) => {
 
 /**
  * Evaluates individual files and files in directories and subdirectories.
+ * @requires async
  * @returns {void}
  */
 let main = () => {
@@ -103,19 +104,41 @@ let main = () => {
 
   console.log('Running...');
 
+  let async = require('async');
+
+  let calls = [];
+
+  let cb = () => {
+  	console.log('something finished');
+  }
+
   for (let path of args) {
     if (path !== '-r') {
-      fs.stat(path, (statErr, stats) => {
-        if (statErr) {
-          console.log('ERROR: ' + path + ' could not be found.');
-        } else if (stats.isFile(path)) {
-          trimFile(path);
-        } else if (stats.isDirectory(path)) {
-          trimFilesInDir(path, r);
-        }
-      });
+    	calls.push((cb) => {
+	      fs.stat(path, (statErr, stats) => {
+	        if (statErr) {
+	          console.log('ERROR: ' + path + ' could not be found.');
+	        } else if (stats.isFile(path)) {
+	          trimFile(path);
+	        } else if (stats.isDirectory(path)) {
+	          trimFilesInDir(path, r);
+	        }
+	        cb();
+	      });
+    	});
     }
   }
+
+  async.parallel(calls, (asyncErr, result) => {
+  	console.log('IS THIS DONE YET??');
+  	if (asyncErr) {
+  		console.log(asyncErr);
+  	} else {
+  		console.log(result);
+  		console.log('xxxxxxxxxxxxxxxxxxxxxx');
+  		console.log('Done');
+  	}
+  });
 }
 
 main();
