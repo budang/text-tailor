@@ -2,7 +2,6 @@
 "use strict";
 
 let fs = require('fs'),
-  path = require('path'),
   walk = require('walk');
 
 /**
@@ -71,7 +70,7 @@ let main = () => {
   }
 
   // recursive flag
-  let recurse = args.indexOf('-r') > -1;
+  // let recurse = args.indexOf('-r') > -1;
 
   console.log('Running...');
 
@@ -80,49 +79,47 @@ let main = () => {
   let calls = [];
 
   for (let pathAddr of args) {
-    if (pathAddr !== '-r') {
-    	calls.push((asyncCallback) => {
-    		// console.log('running.....................');
-    		console.log('recurse', recurse);
-  		  let walker = walk.walk(pathAddr, { followLinks: false });
-	      
-	      walker.on('file', (path, stat, next) => {
-	      	// normalize path strings
-	      	let filepath = path;
-	      	if (!path.endsWith('/')) {
-	      		filepath += '/';
-	      	}
+    // if (pathAddr !== '-r') {
+      calls.push((asyncCallback) => {
+        let walker = walk.walk(pathAddr, {followLinks: false});
 
-	      	trimFile(filepath + stat.name);
-	      	next();
-	      });
-  		  
-  		  walker.on('directory', (path, stat, next) => {
-  		  	next();
-	      });
-  		  
-  		  walker.on('error', (path, err, next) => {
-  		  	console.log("ERRORSSSSSSSSS")
-  		  	console.log(err);
-  		  	next();
-  		  });
+        walker.on('file', (path, stat, next) => {
+          // normalize path strings
+          let filepath = path;
+          if (!path.endsWith('/')) {
+            filepath += '/';
+          }
 
-  		  walker.on('end', () => {
-  		  	console.log('walker done, print stuff from ASYNC now');
-  		  	asyncCallback();
-  		  });
-    	});
-    }
+          trimFile(filepath + stat.name);
+          next();
+        });
+
+        walker.on('directory', (path, stat, next) => {
+          next();
+        });
+
+        walker.on('error', (path, err, next) => {
+          console.log("ERRORSSSSSSSSS")
+          console.log(err);
+          next();
+        });
+
+        walker.on('end', () => {
+          console.log('walker done, print stuff from ASYNC now');
+          asyncCallback();
+        });
+      });
+    // }
   }
 
   async.parallel(calls, (asyncErr, result) => {
-  	console.log('IS THIS DONE YET??');
-  	if (asyncErr) {
-  		console.log(asyncErr);
-  	} else {
-  		// console.log(result);
-  		console.log('xxxxxxxxxxxxxxxxxxxxxx');
-  	}
+    console.log('IS THIS DONE YET??');
+    if (asyncErr) {
+      console.log(asyncErr);
+    } else {
+      console.log(result);
+      console.log('xxxxxxxxxxxxxxxxxxxxxx');
+    }
   });
 }
 
