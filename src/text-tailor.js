@@ -79,27 +79,30 @@ let main = () => {
 
   let calls = [];
 
-  // async callback
-  /*let cb = () => {
-  	return;
-  }*/
-
   for (let pathAddr of args) {
     if (pathAddr !== '-r') {
     	calls.push((asyncCallback) => {
-  		  let walker = walk.walk(pathAddr, { followLinks: recurse });
+    		// console.log('running.....................');
+    		console.log('recurse', recurse);
+  		  let walker = walk.walk(pathAddr, { followLinks: false });
 	      
 	      walker.on('file', (path, stat, next) => {
-	      	trimFile(path + '/' + stat);
+	      	// normalize path strings
+	      	let filepath = path;
+	      	if (!path.endsWith('/')) {
+	      		filepath += '/';
+	      	}
+
+	      	trimFile(filepath + stat.name);
 	      	next();
 	      });
   		  
   		  walker.on('directory', (path, stat, next) => {
-      	  trimFile(path + '/' + stat);
   		  	next();
 	      });
   		  
   		  walker.on('error', (path, err, next) => {
+  		  	console.log("ERRORSSSSSSSSS")
   		  	console.log(err);
   		  	next();
   		  });
@@ -117,7 +120,7 @@ let main = () => {
   	if (asyncErr) {
   		console.log(asyncErr);
   	} else {
-  		console.log(result);
+  		// console.log(result);
   		console.log('xxxxxxxxxxxxxxxxxxxxxx');
   	}
   });
