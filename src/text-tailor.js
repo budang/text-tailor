@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs');
+let fs = require('fs'),
+  path = require('path'),
+  walk = require('walk');
 
 /**
  * Trims a file of trailing whitespaces and leading and trailing newlines.
@@ -9,7 +11,7 @@ let fs = require('fs');
  * @requires readline
  * @returns {void}
  */
-let trimFile = (file, asyncCallback) => {
+let trimFile = (file) => {
   console.log('Evaluating ' + file + '...');
 
   let lines = [];
@@ -49,43 +51,10 @@ let trimFile = (file, asyncCallback) => {
     fs.writeFile(file, text, (statErr) => {
       if (statErr) {
         console.log(statErr);
-        asyncCallback();
       } else {
         console.log('Evaluation for ' + file + ' successful!');
-        asyncCallback();
       }
     })
-  });
-}
-
-/**
- * Trims files in a directory and its subdirectories.
- * @param {string} dir - The name of the file to be evaluated.
- * @param {boolean} recurse - If files in subdirectories should be evaluated.
- * @returns {void}
- */
-let trimFilesInDir = (dir, recurse, asyncCallback) => {
-  // normalize input strings
-  if (!dir.endsWith('/')) {
-    dir += '/';
-  }
-
-  // read files and subdirectories
-  fs.readdir(dir, (readdirErr, files) => {
-    if (!readdirErr) {
-      for (let file of files) {
-        let path = dir + file;
-        fs.stat(path, (statErr, stats) => {
-          if (statErr) {
-            console.log('ERROR: ' + path + ' could not be found.');
-          } else if (stats.isFile(path)) {
-            trimFile(path, asyncCallback);
-          } else if (stats.isDirectory(path) && recurse) {
-            trimFilesInDir(path, asyncCallback);
-          }
-        });
-      }
-    }
   });
 }
 
@@ -102,7 +71,7 @@ let main = () => {
   }
 
   // recursive flag
-  let r = args.indexOf('-r') > -1;
+  let recurse = args.indexOf('-r') > -1;
 
   console.log('Running...');
 
@@ -111,23 +80,34 @@ let main = () => {
   let calls = [];
 
   // async callback
-  let cb = () => {
+  /*let cb = () => {
   	return;
-  }
+  }*/
 
-  for (let path of args) {
-    if (path !== '-r') {
-    	calls.push((cb) => {
-	      fs.stat(path, (statErr, stats) => {
-	        if (statErr) {
-	          console.log('ERROR: ' + path + ' could not be found.');
-	        } else if (stats.isFile(path)) {
-	          trimFile(path, cb);
-	        } else if (stats.isDirectory(path)) {
-	          trimFilesInDir(path, r, cb);
-	        }
-	        ;
+  for (let pathAddr of args) {
+    if (pathAddr !== '-r') {
+    	calls.push((asyncCallback) => {
+  		  let walker = walk.walk(pathAddr, { followLinks: recurse });
+	      
+	      walker.on('file', (path, stat, next) => {
+	      	trimFile(path + '/' + stat);
+	      	next();
 	      });
+  		  
+  		  walker.on('directory', (path, stat, next) => {
+      	  trimFile(path + '/' + stat);
+  		  	next();
+	      });
+  		  
+  		  walker.on('error', (path, err, next) => {
+  		  	console.log(err);
+  		  	next();
+  		  });
+
+  		  walker.on('end', () => {
+  		  	console.log('walker done, print stuff from ASYNC now');
+  		  	asyncCallback();
+  		  });
     	});
     }
   }
