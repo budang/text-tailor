@@ -13,9 +13,8 @@ let fs = require('fs'),
 let trimFile = (file) => {
   console.log('Evaluating ' + file + '...');
 
-  let lines = [];
-
-  let lineReader = require('readline');
+  let lineReader = require('readline'),
+      lines = [];
 
   lineReader = lineReader.createInterface({
     input: require('fs').createReadStream(file)
@@ -70,28 +69,41 @@ let main = () => {
   }
 
   // recursive flag
-  // let recurse = args.indexOf('-r') > -1;
+  let recurse = args.indexOf('-r') > -1;
 
   console.log('Running...');
 
-  let async = require('async');
+  let async = require('async'),
+      calls = [];
 
-  let calls = [];
-
+  // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
-    // if (pathAddr !== '-r') {
+    if (pathAddr !== '-r') {
       calls.push((asyncCallback) => {
-        let walker = walk.walk(pathAddr, {followLinks: false});
+        let walker = walk.walk(pathAddr, {followLinks: false}),
+            nestedDirs = [];
 
         walker.on('file', (path, stat, next) => {
           // normalize path strings
           let filepath = (path + '/' + stat.name).replace('//', '/');
 
-          trimFile(filepath);
-          next();
+          if (nestedDirs.indexOf(path) > -1 && !recurse) {
+          	// do not evaluate if the recursive flag is not set
+            next();
+          } else {
+            trimFile(filepath);
+            next();
+          }
         });
 
         walker.on('directory', (path, stat, next) => {
+          // check if this dir is nested
+          if (!path.includes(stat.name)) {
+          	// normalize path strings
+            let dirpath = (path + '/' + stat.name).replace('//', '/');
+            nestedDirs.push(dirpath);
+          }
+
           next();
         });
 
@@ -101,20 +113,21 @@ let main = () => {
         });
 
         walker.on('end', () => {
-          console.log('walker done, print stuff from ASYNC now');
           asyncCallback();
         });
       });
-    // }
+    }
   }
 
+  // run evaluations in parallel
   async.parallel(calls, (asyncErr, result) => {
-    console.log('IS THIS DONE YET??');
     if (asyncErr) {
       console.log(asyncErr);
     } else {
-      console.log(result);
-      console.log('xxxxxxxxxxxxxxxxxxxxxx');
+      console.log('Done!');
+    	if (result[0]) {
+    		console.log('Result: ' + result);
+    	}
     }
   });
 }
