@@ -83,9 +83,10 @@ let main = () => {
 
         walker.on('file', (path, stat, nextCb) => {
           // normalize path strings
-          let filepath = (path + '/' + stat.name).replace('//', '/');
+          let homepath = path.replace('//', '/'),
+              filepath = (path + '/' + stat.name).replace('//', '/');
 
-          if (nestedDirs.indexOf(path) > -1 && !recurse) {
+          if (nestedDirs.indexOf(homepath) > -1 && !recurse) {
             // do not evaluate if the recursive flag is not set
             nextCb();
           } else {
