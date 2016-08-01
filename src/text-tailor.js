@@ -77,24 +77,24 @@ let main = () => {
   // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
     if (pathAddr !== '-r') {
-      calls.push((asyncCallback) => {
+      calls.push((asyncCb) => {
         let walker = walk.walk(pathAddr, {followLinks: false}),
             nestedDirs = [];
 
-        walker.on('file', (path, stat, next) => {
+        walker.on('file', (path, stat, nextCb) => {
           // normalize path strings
           let filepath = (path + '/' + stat.name).replace('//', '/');
 
           if (nestedDirs.indexOf(path) > -1 && !recurse) {
             // do not evaluate if the recursive flag is not set
-            next();
+            nextCb();
           } else {
             trimFile(filepath);
-            next();
+            nextCb();
           }
         });
 
-        walker.on('directory', (path, stat, next) => {
+        walker.on('directory', (path, stat, nextCb) => {
           // check if this dir is nested
           if (!path.includes(stat.name)) {
             // normalize path strings
@@ -102,16 +102,16 @@ let main = () => {
             nestedDirs.push(dirpath);
           }
 
-          next();
+          nextCb();
         });
 
-        walker.on('nodeError', (path, err, next) => {
-          console.log(err.error);
-          next();
+        walker.on('nodeError', (path, walkerErr, nextCb) => {
+          console.log(walkerErr.error);
+          nextCb();
         });
 
         walker.on('end', () => {
-          asyncCallback();
+          asyncCb();
         });
       });
     }
