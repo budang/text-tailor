@@ -49,8 +49,6 @@ let trimFile = (file) => {
     fs.writeFile(file, text, (statErr) => {
       if (statErr) {
         console.log(statErr);
-      } else {
-        console.log('Evaluation for ' + file + ' successful!');
       }
     })
   });
