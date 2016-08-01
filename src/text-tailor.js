@@ -13,8 +13,8 @@ let fs = require('fs'),
 let trimFile = (file) => {
   console.log('Evaluating ' + file + '...');
 
-  let lineReader = require('readline'),
-      lines = [];
+  let lineReader = require('readline');
+  let lines = [];
 
   lineReader = lineReader.createInterface({
     input: require('fs').createReadStream(file)
@@ -71,8 +71,8 @@ let main = () => {
 
   console.log('Running...');
 
-  let async = require('async'),
-      calls = [];
+  let async = require('async');
+  let calls = [];
 
   // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
@@ -86,7 +86,7 @@ let main = () => {
           let filepath = (path + '/' + stat.name).replace('//', '/');
 
           if (nestedDirs.indexOf(path) > -1 && !recurse) {
-          	// do not evaluate if the recursive flag is not set
+            // do not evaluate if the recursive flag is not set
             next();
           } else {
             trimFile(filepath);
@@ -97,7 +97,7 @@ let main = () => {
         walker.on('directory', (path, stat, next) => {
           // check if this dir is nested
           if (!path.includes(stat.name)) {
-          	// normalize path strings
+            // normalize path strings
             let dirpath = (path + '/' + stat.name).replace('//', '/');
             nestedDirs.push(dirpath);
           }
@@ -123,9 +123,9 @@ let main = () => {
       console.log(asyncErr);
     } else {
       console.log('Done!');
-    	if (result[0]) {
-    		console.log('Result: ' + result);
-    	}
+      if (result[0]) {
+        console.log('Result: ' + result);
+      }
     }
   });
 }
