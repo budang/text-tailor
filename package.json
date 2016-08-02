@@ -1,6 +1,6 @@
 {
   "name": "text-tailor",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Trims trailing spaces after each line and trims leading and trailing newlines in a file",
   "main": "./src/text-tailor.js",
   "scripts": {
@@ -32,5 +32,9 @@
   },
   "devDependencies": {
     "eslint": "^3.1.1"
+  },
+  "dependencies": {
+    "async": "^2.0.1",
+    "walk": "^2.3.9"
   }
 }
