@@ -5,7 +5,7 @@ let fs = require('fs'),
   walk = require('walk');
 
 /**
- * Trims a file of trailing whitespaces and leading and trailing newlines.
+ * Trims a file of trailing white/tabspaces and leading and trailing newlines.
  * @param {string} file - The name of the file to be evaluated.
  * @requires readline
  * @returns {void}
@@ -22,9 +22,9 @@ let trimFile = (file) => {
 
   lineReader.on('line', (line) => {
     // trim trailing spaces
-    if (line.endsWith(' ')) {
+    if (line.endsWith(' ') || line.endsWith('\t')) {
       let i = line.length - 1;
-      while(line[i] === ' ' && i > -1) {
+      while((line[i] === ' ' || line[i] === '\t') && i > -1) {
         i--;
       }
       line = line.substring(0, i + 1);
