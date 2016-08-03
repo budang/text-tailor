@@ -19,6 +19,8 @@
     "code-quality",
     "trim",
     "whitespace",
+    "tabspace",
+    "space",
     "newline"
   ],
   "author": "budang",
