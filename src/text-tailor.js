@@ -66,8 +66,12 @@ let main = () => {
     throw new Error("Insufficient argument(s)");
   }
 
-  // recursive flag
-  let recurse = args.indexOf('-r') > -1;
+  let program = require('commander');
+	program
+	  .version('1.0.7')
+	  .option('-r, --recursive', 'evaluate files in nested directories')
+	  .parse(args);
+  console.log(program, program.recursive);
 
   console.log('Running...');
 
