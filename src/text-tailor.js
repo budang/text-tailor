@@ -1,24 +1,21 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs'),
-  walk = require('walk');
-
 /**
  * Trims a file of trailing white/tabspaces and leading and trailing newlines.
  * @param {string} file - The name of the file to be evaluated.
- * @requires readline
+ * @requires fs, readline
  * @returns {void}
  */
-let trimFile = (file) => {
+const trimFile = (file) => {
   console.log('Evaluating ' + file + '...');
 
-  let lineReader = require('readline');
-  let lines = [];
+  const fs = require('fs'),
+    lineReader = require('readline').createInterface({
+      input: fs.createReadStream(file)
+    });
 
-  lineReader = lineReader.createInterface({
-    input: require('fs').createReadStream(file)
-  });
+  let lines = [];
 
   lineReader.on('line', (line) => {
     // trim trailing spaces
@@ -56,12 +53,13 @@ let trimFile = (file) => {
 
 /**
  * Evaluates individual files and files in directories and subdirectories.
- * @requires commander, async
+ * @requires async,commander, walk
  * @returns {void}
  */
-let main = () => {
-	let program = require('commander'),
-	  async = require('async');
+const main = () => {
+	const async = require('async'),
+	  program = require('commander'),
+	  walk = require('walk');
 
 	program
 	  .version('1.0.7')
