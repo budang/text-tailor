@@ -56,70 +56,68 @@ let trimFile = (file) => {
 
 /**
  * Evaluates individual files and files in directories and subdirectories.
- * @requires async
+ * @requires commander, async
  * @returns {void}
  */
 let main = () => {
-  let args = process.argv.slice(2);
+	let program = require('commander'),
+	  async = require('async');
 
-  if (!args.length || (args.length === 1 && args[0] === '-r')) {
-    throw new Error("Insufficient argument(s)");
-  }
-
-  let program = require('commander');
 	program
 	  .version('1.0.7')
 	  .option('-r, --recursive', 'evaluate files in nested directories')
-	  .parse(args);
-  console.log(program, program.recursive);
+	  .parse(process.argv);
+
+  let args = program.args,
+    recursive = program.recursive,
+    calls = [];
+
+  if (!args.length) {
+    throw new Error("Insufficient argument(s)");
+  }
 
   console.log('Running...');
 
-  let async = require('async');
-  let calls = [];
-
   // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
-    if (pathAddr !== '-r') {
-      calls.push((asyncCb) => {
-        let walker = walk.walk(pathAddr, {followLinks: false}),
-            nestedDirs = [];
+    calls.push((asyncCb) => {
+      let walker = walk.walk(pathAddr, {followLinks: false}),
+          nestedDirs = [];
 
-        walker.on('file', (path, stat, nextCb) => {
-          // normalize path strings
-          let homepath = path.replace('//', '/'),
-              filepath = (path + '/' + stat.name).replace('//', '/');
+      walker.on('file', (path, stat, nextCb) => {
+        // normalize path strings
+        let homepath = path.replace('//', '/'),
+            filepath = (path + '/' + stat.name).replace('//', '/');
 
-          if (nestedDirs.indexOf(homepath) > -1 && !recurse) {
-            // do not evaluate if the recursive flag is not set
-            nextCb();
-          } else {
-            trimFile(filepath);
-            nextCb();
-          }
-        });
-
-        walker.on('directory', (path, stat, nextCb) => {
-          // check if this dir is nested
-          if (!path.includes(stat.name)) {
-            // normalize path strings
-            let dirpath = (path + '/' + stat.name).replace('//', '/');
-            nestedDirs.push(dirpath);
-          }
-
+        if (nestedDirs.indexOf(homepath) > -1 && !recursive) {
+          // do not evaluate if the recursive flag is not set
           nextCb();
-        });
-
-        walker.on('nodeError', (path, walkerErr, nextCb) => {
-          console.log(walkerErr.error);
+        } else {
+          trimFile(filepath);
           nextCb();
-        });
-
-        walker.on('end', () => {
-          asyncCb();
-        });
+        }
       });
-    }
+
+      walker.on('directory', (path, stat, nextCb) => {
+        // check if this dir is nested
+        if (!path.includes(stat.name)) {
+          // normalize path strings
+          let dirpath = (path + '/' + stat.name).replace('//', '/');
+          nestedDirs.push(dirpath);
+        }
+
+        nextCb();
+      });
+
+      walker.on('nodeError', (path, walkerErr, nextCb) => {
+        console.log(walkerErr.error);
+        nextCb();
+      });
+
+      walker.on('end', () => {
+        asyncCb();
+      });
+    });
   }
 
   // run evaluations in parallel
