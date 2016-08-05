@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "async": "^2.0.1",
+    "colors": "^1.1.2",
     "commander": "^2.9.0",
     "walk": "^2.3.9"
   }

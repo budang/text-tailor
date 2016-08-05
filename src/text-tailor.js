@@ -1,6 +1,20 @@
 #!/usr/bin/env node
 "use strict";
 
+const colors = require('colors/safe');
+colors.setTheme({
+  silly: 'rainbow',
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'green',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red'
+});
+
 /**
  * Trims a file of trailing white/tabspaces and leading and trailing newlines.
  * @param {string} file - The name of the file to be evaluated.
@@ -9,7 +23,7 @@
  * @returns {void}
  */
 const trimFile = (file) => {
-	console.log('Evaluating ' + file + '...');
+	console.log(colors.input('Evaluating ' + file + '...'));
 
 	const fs = require('fs'),
 		rl = require('readline');
@@ -47,7 +61,7 @@ const trimFile = (file) => {
 		// overwrite original file with trimmed contents
 		fs.writeFile(file, text, (statErr) => {
 			if (statErr) {
-				console.log(statErr);
+				console.log(colors.error(statErr));
 			}
 		})
 	});
@@ -78,7 +92,7 @@ const main = () => {
 		throw new Error("Insufficient argument(s)");
 	}
 
-	console.log('Running...');
+	console.log(colors.info('Running...'));
 
 	// add evaluations to an array of functions to be run in parallel
 	for (let pathAddr of args) {
@@ -125,11 +139,11 @@ const main = () => {
 	// run evaluations in parallel
 	async.parallel(calls, (asyncErr, result) => {
 		if (asyncErr) {
-			console.log(asyncErr);
+			console.log(colors.error(asyncErr));
 		} else {
-			console.log('Done!');
+			console.log(colors.green('Done!'));
 			if (result[0]) {
-				console.log('Result: ' + result);
+				console.log(colors.data('Result: ' + result));
 			}
 		}
 	});
