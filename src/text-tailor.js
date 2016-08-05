@@ -3,15 +3,10 @@
 
 const colors = require('colors/safe');
 colors.setTheme({
-  silly: 'rainbow',
   input: 'grey',
-  verbose: 'cyan',
-  prompt: 'grey',
   info: 'green',
   data: 'grey',
-  help: 'cyan',
   warn: 'yellow',
-  debug: 'blue',
   error: 'red'
 });
 
@@ -93,8 +88,6 @@ const main = () => {
   if (!args.length) {
     throw new Error("Insufficient argument(s)");
   }
-
-  console.log(colors.info('Running...'));
 
   // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
