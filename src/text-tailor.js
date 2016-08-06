@@ -13,7 +13,8 @@ colors.setTheme({
 let errors = [];
 
 /**
- * Trims a file of trailing white/tabspaces and leading and trailing newlines.
+ * @description Trims a file of trailing white/tabspaces and leading and
+ * trailing newlines.
  * @param {string} file - The name of the file to be evaluated.
  * @requires fs
  * @requires readline
@@ -53,19 +54,20 @@ const trimFile = (file) => {
     }
     lines = lines.slice(i, j + 1);
 
-    let text = lines.join('\n');
+    let content = lines.join('\n');
 
     // overwrite original file with trimmed contents
-    fs.writeFile(file, text, (statErr) => {
-      if (statErr) {
-        errors.push(statErr);
+    fs.writeFile(file, content, (err) => {
+      if (err) {
+        errors.push(err);
       }
     })
   });
 }
 
 /**
- * Evaluates individual files and files in directories and subdirectories.
+ * @description Parses command line args and evaluates individual files and
+ * files in directories and subdirectories.
  * @requires async
  * @requires commander
  * @requires walk
@@ -78,7 +80,7 @@ const main = () => {
 
   // set up program variables
   program.version('1.0.7');
-  program.option('-r, --recursive', 'evaluate files in nested directories')
+  program.option('-r, --recursive', 'evaluate files in nested directories');
   program.parse(process.argv);
 
   let args = program.args,
@@ -120,8 +122,8 @@ const main = () => {
         nextCb();
       });
 
-      walker.on('nodeError', (path, walkerErr, nextCb) => {
-        errors.push(walkerErr.error);
+      walker.on('nodeError', (path, err, nextCb) => {
+        errors.push(err.error);
         nextCb();
       });
 
@@ -132,23 +134,24 @@ const main = () => {
   }
 
   // run evaluations in parallel
-  async.parallel(calls, (asyncErr, result) => {
-    if (asyncErr) {
-      errors.push(asyncErr);
-    }
-
-    if (errors.length > 0) {
-      for (let error of errors) {
-        console.log(colors.error(error));
-      }
-      console.log(colors.warn('Evaluation completed with ' +
-        errors.length + ' error(s).'));
+  async.parallel(calls, (err, result) => {
+    if (err) {
+      console.log(colors.error(err));
     } else {
-      console.log(colors.green('Done!'));
-    }
+      // print results
+      if (errors.length > 0) {
+        for (let error of errors) {
+          console.log(colors.error(error));
+        }
+        console.log(colors.warn('Evaluation completed with ' + errors.length +
+          ' error(s).'));
+      } else {
+        console.log(colors.green('Done!'));
+      }
 
-    if (result[0]) {
-      console.log(colors.data('Result: ' + result));
+      if (result[0]) {
+        console.log(colors.data('Result: ' + result));
+      }
     }
   });
 }
