@@ -136,21 +136,20 @@ const main = () => {
     if (asyncErr) {
       errors.push(asyncErr);
     }
-    
+
     if (errors.length > 0) {
       for (let error of errors) {
         console.log(colors.error(error));
       }
-      console.log(colors.warn('Evaluation completed with ' + errors.length + ' error(s).'));
+      console.log(colors.warn('Evaluation completed with ' +
+        errors.length + ' error(s).'));
     } else {
-      console.log(colors.green('Done!'));	
+      console.log(colors.green('Done!'));
     }
-    
+
     if (result[0]) {
       console.log(colors.data('Result: ' + result));
     }
-
-
   });
 }
 
