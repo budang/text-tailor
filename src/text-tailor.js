@@ -124,7 +124,7 @@ const main = () => {
         nextCb();
       });
 
-      walker.on('nodeError', (path, err, nextCb) => {
+      walker.on('nodeError', (addr, err, nextCb) => {
         errors.push(err.error);
         nextCb();
       });
