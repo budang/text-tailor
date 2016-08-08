@@ -85,15 +85,25 @@ const main = () => {
   program.option('-r, --recursive', 'evaluate files in nested directories');
   program.parse(process.argv);
 
-  let args = program.args,
-    recursive = program.recursive,
-    calls = [];
-
-  if (!args.length) {
+  if (!program.args.length) {
     throw new Error("Insufficient argument(s)");
   }
 
-  // add evaluations to an array of functions to be run in parallel
+  let recursive = program.recursive,
+    args = [],
+    calls = [];
+
+  for (let arg of program.args) {
+  	// normalize path strings
+  	let pathAddr = path.normalize(arg + '/');
+  	
+  	// do not add duplicates
+  	if (args.indexOf(pathAddr) === -1) {
+  		args.push(pathAddr);
+  	}
+  }
+
+  // // add evaluations to an array of functions to be run in parallel
   for (let pathAddr of args) {
     calls.push((asyncCb) => {
       let walker = walk.walk(pathAddr, {followLinks: false}),
@@ -101,8 +111,8 @@ const main = () => {
 
       walker.on('file', (addr, stat, nextCb) => {
         // normalize path strings
-        let homepath = path.normalize(addr),
-            filepath = path.normalize(addr + '/' + stat.name);
+        let homepath = path.normalize(addr + '/'),
+            filepath = path.normalize(homepath + stat.name);
 
         if (nestedDirs.indexOf(homepath) > -1 && !recursive) {
           // do not evaluate if the recursive flag is not set
@@ -116,8 +126,7 @@ const main = () => {
       walker.on('directory', (addr, stat, nextCb) => {
         // check if this dir is nested
         if (!addr.includes(stat.name)) {
-          // normalize path strings
-          let dirpath = path.normalize(addr + '/' + stat.name);
+          let dirpath = addr + stat.name + '/';
           nestedDirs.push(dirpath);
         }
 
