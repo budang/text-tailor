@@ -70,11 +70,13 @@ const trimFile = (file) => {
  * files in directories and subdirectories.
  * @requires async
  * @requires commander
+ * @requires path
  * @requires walk
  * @returns {void}
  */
 const main = () => {
   const async = require('async'),
+    path = require('path'),
     program = require('commander'),
     walk = require('walk');
 
@@ -97,10 +99,10 @@ const main = () => {
       let walker = walk.walk(pathAddr, {followLinks: false}),
           nestedDirs = [];
 
-      walker.on('file', (path, stat, nextCb) => {
+      walker.on('file', (addr, stat, nextCb) => {
         // normalize path strings
-        let homepath = path.replace('//', '/'),
-            filepath = (path + '/' + stat.name).replace('//', '/');
+        let homepath = path.normalize(addr),
+            filepath = path.normalize(addr + '/' + stat.name);
 
         if (nestedDirs.indexOf(homepath) > -1 && !recursive) {
           // do not evaluate if the recursive flag is not set
@@ -111,11 +113,11 @@ const main = () => {
         }
       });
 
-      walker.on('directory', (path, stat, nextCb) => {
+      walker.on('directory', (addr, stat, nextCb) => {
         // check if this dir is nested
-        if (!path.includes(stat.name)) {
+        if (!addr.includes(stat.name)) {
           // normalize path strings
-          let dirpath = (path + '/' + stat.name).replace('//', '/');
+          let dirpath = path.normalize(addr + '/' + stat.name);
           nestedDirs.push(dirpath);
         }
 
