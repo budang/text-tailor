@@ -1,7 +1,7 @@
 {
   "name": "text-tailor",
-  "version": "1.0.7",
-  "description": "Trims trailing spaces after each line and trims leading and trailing newlines in a file",
+  "version": "1.0.8",
+  "description": "Trims trailing spaces and tabspaces after each line and trims leading and trailing newlines in a file",
   "main": "./src/text-tailor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

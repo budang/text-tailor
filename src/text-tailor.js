@@ -94,13 +94,13 @@ const main = () => {
     calls = [];
 
   for (let arg of program.args) {
-  	// normalize path strings
-  	let pathAddr = path.normalize(arg + '/');
-  	
-  	// do not add duplicates
-  	if (args.indexOf(pathAddr) === -1) {
-  		args.push(pathAddr);
-  	}
+    // normalize path strings
+    let pathAddr = path.normalize(arg + '/');
+
+    // do not add duplicates
+    if (args.indexOf(pathAddr) === -1) {
+      args.push(pathAddr);
+    }
   }
 
   // // add evaluations to an array of functions to be run in parallel
