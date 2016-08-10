@@ -1,113 +1,122 @@
 #!/usr/bin/env node
-"use strict";
-
-const colors = require('colors/safe');
-colors.setTheme({
-  input: 'grey',
-  info: 'green',
-  data: 'grey',
-  warn: 'yellow',
-  error: 'red'
-});
-
-let errors = [];
-
-/**
- * @description Trims a file of trailing white/tabspaces and leading and
- * trailing newlines.
- * @param {string} file - The name of the file to be evaluated.
- * @requires fs
- * @requires readline
- * @returns {void}
- */
-const trimFile = (file) => {
-  console.log(colors.input('Evaluating ' + file + '...'));
-
-  const fs = require('fs'),
-    rl = require('readline');
-
-  let lines = [],
-    lineReader = rl.createInterface({
-      input: fs.createReadStream(file)
-    });
-
-  lineReader.on('line', (line) => {
-    // trim trailing spaces
-    if (line.endsWith(' ') || line.endsWith('\t')) {
-      let i = line.length - 1;
-      while((line[i] === ' ' || line[i] === '\t') && i > -1) {
-        i--;
-      }
-      line = line.substring(0, i + 1);
-    }
-
-    lines.push(line);
-  }).on('close', () => {
-    let i = 0, j = lines.length - 1;
-    // trim leading newlines
-    while (lines[i] === '' && i < lines.length + 1) {
-      i++;
-    }
-    // trim trailing newlines
-    while (lines[j] === '' && j > -1) {
-      j--;
-    }
-    lines = lines.slice(i, j + 1);
-
-    let content = lines.join('\n');
-
-    // overwrite original file with trimmed contents
-    fs.writeFile(file, content, (err) => {
-      if (err) {
-        errors.push(err);
-      }
-    })
-  });
-}
 
 /**
  * @description Parses command line args and evaluates individual files and
  * files in directories and subdirectories.
  * @requires async
+ * @requries colors/safe
  * @requires commander
+ * @requires fs
  * @requires path
+ * @requires readline
  * @requires walk
  * @returns {void}
  */
-const main = () => {
+(() => {
+  "use strict";
+
+  // dependencies
   const async = require('async'),
+    colors = require('colors/safe'),
+    fs = require('fs'),
+    rl = require('readline'),
     path = require('path'),
     program = require('commander'),
     walk = require('walk');
 
+  // list of errors
+  let errors = [];
+
+  /**
+   * @description Trims a file of trailing white/tabspaces and leading and
+   * trailing newlines.
+   * @param {string} file - The name of the file to be evaluated.
+   * @returns {void}
+   */
+  const trimFile = (file) => {
+    console.log(colors.input('Evaluating ' + file + '...'));
+
+    let lines = [],
+      lineReader = rl.createInterface({
+        input: fs.createReadStream(file)
+      });
+
+    lineReader.on('line', (line) => {
+      // trim trailing spaces
+      if (line.endsWith(' ') || line.endsWith('\t')) {
+        let i = line.length - 1;
+        while((line[i] === ' ' || line[i] === '\t') && i > -1) {
+          i--;
+        }
+        line = line.substring(0, i + 1);
+      }
+
+      lines.push(line);
+    });
+
+    lineReader.on('close', () => {
+      let i = 0, j = lines.length - 1;
+      // trim leading newlines
+      while (lines[i] === '' && i < lines.length + 1) {
+        i++;
+      }
+      // trim trailing newlines
+      while (lines[j] === '' && j > -1) {
+        j--;
+      }
+      lines = lines.slice(i, j + 1);
+
+      let content = lines.join('\n');
+
+      // overwrite original file with trimmed contents
+      fs.writeFile(file, content, (err) => {
+        if (err) {
+          errors.push(err);
+        }
+      })
+    });
+  }
+
+  // set color themes
+  colors.setTheme({
+    input: 'grey',
+    info: 'green',
+    data: 'grey',
+    warn: 'yellow',
+    error: 'red'
+  });
+
   // set up program variables
   program.version('1.0.7');
+  program.usage('[options] <param1, param2, …, paramN>');
   program.option('-r, --recursive', 'evaluate files in nested directories');
   program.parse(process.argv);
 
-  if (!program.args.length) {
-    throw new Error("Insufficient argument(s)");
-  }
-
+  // recursive flag, list of arguments, list of function calls
   let recursive = program.recursive,
     args = [],
     calls = [];
 
+  // check if any arguments were passed
+  if (!program.args.length) {
+    throw new Error("Insufficient arguments: no arguments specified");
+  }
+
+  // populate list of unique arguments to evaluate
   for (let arg of program.args) {
     // normalize path strings
     let pathAddr = path.normalize(arg + '/');
 
-    // do not add duplicates
     if (args.indexOf(pathAddr) === -1) {
       args.push(pathAddr);
     }
   }
 
-  // // add evaluations to an array of functions to be run in parallel
+  // add evaluations to be run in parallel
   for (let pathAddr of args) {
     calls.push((asyncCb) => {
       let walker = walk.walk(pathAddr, {followLinks: false}),
-          nestedDirs = [];
+        nestedDirs = [];
 
       walker.on('file', (addr, stat, nextCb) => {
         // normalize path strings
@@ -129,7 +138,6 @@ const main = () => {
           let dirpath = addr + stat.name + '/';
           nestedDirs.push(dirpath);
         }
-
         nextCb();
       });
 
@@ -165,6 +173,4 @@ const main = () => {
       }
     }
   });
-}
-
-main();
+})();

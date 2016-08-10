@@ -14,7 +14,7 @@ text-tailor path/to/file.txt
 ```
 For multiple files:
 ```
-text-tailor path/to/file0.txt path/to/file1.txt ... path/to/fileN.txt
+text-tailor path/to/file1.txt path/to/file2.txt ... path/to/fileN.txt
 ```
 For a single directory, non-recursively:
 ```
@@ -26,5 +26,5 @@ text-tailor path/to/dir -r
 ```
 For multiple files and directories, recursively:
 ```
-text-tailor path/to/file0.txt path/to/dir0 ... path/to/fileN.txt path/to/dirN -r
+text-tailor path/to/file1.txt path/to/dir1 ... path/to/fileN.txt path/to/dirN -r
 ```
