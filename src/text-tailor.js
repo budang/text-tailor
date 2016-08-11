@@ -142,7 +142,6 @@
 
       walker.on('directory', (addr, stat, nextCb) => {
         // check if this dir is nested
-        console.log(addr, stat.name)
         if (!addr.includes(stat.name)) {
           let dirpath = path.normalize(addr + stat.name + '/');
           nestedDirs.push(dirpath);
