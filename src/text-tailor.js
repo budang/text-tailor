@@ -105,14 +105,14 @@
   // populate list of arguments to evaluate
   for (let arg of program.args) {
     // normalize path strings
-    let pathAddr = '';    
+    let pathAddr = '';
     if (path.extname(arg)) {
-    	pathAddr = path.normalize(arg);
+      pathAddr = path.normalize(arg);
     } else {
-    	pathAddr = path.normalize(arg + '/');    	
+      pathAddr = path.normalize(arg + '/');
     }
     if (!pathAddr.startsWith('./') && !pathAddr.startsWith('../')) {
-    	pathAddr = './' + pathAddr;
+      pathAddr = './' + pathAddr;
     }
 
     // add unique args
@@ -131,6 +131,7 @@
         // normalize path strings
         let homepath = path.normalize(addr + '/'),
             filepath = path.normalize(homepath + stat.name);
+
         if (nestedDirs.indexOf(homepath) > -1 && !recursive) {
           // do not evaluate if the recursive flag is not set
           nextCb();
