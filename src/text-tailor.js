@@ -111,18 +111,20 @@
       args.push(pathAddr);
     }
   }
-
+console.log(args)
   // add evaluations to be run in parallel
   for (let pathAddr of args) {
     calls.push((asyncCb) => {
       let walker = walk.walk(pathAddr, {followLinks: false}),
         nestedDirs = [];
-
+console.log(1)
       walker.on('file', (addr, stat, nextCb) => {
+      	// console.log('file')
         // normalize path strings
         let homepath = path.normalize(addr + '/'),
             filepath = path.normalize(homepath + stat.name);
-
+// console.log(homepath)
+// console.log(nestedDirs)
         if (nestedDirs.indexOf(homepath) > -1 && !recursive) {
           // do not evaluate if the recursive flag is not set
           nextCb();
@@ -133,9 +135,12 @@
       });
 
       walker.on('directory', (addr, stat, nextCb) => {
+      	console.log('dir')
         // check if this dir is nested
+        console.log(addr, stat.name)
         if (!addr.includes(stat.name)) {
-          let dirpath = addr + stat.name + '/';
+          let dirpath = path.normalize(addr + stat.name + '/');
+          // console.log(dirpath, 'nested')
           nestedDirs.push(dirpath);
         }
         nextCb();
