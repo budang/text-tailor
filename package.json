@@ -1,6 +1,6 @@
 {
   "name": "text-tailor",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Trims trailing spaces and tabspaces after each line and trims leading and trailing newlines in a file",
   "main": "./src/text-tailor.js",
   "scripts": {
@@ -27,6 +27,7 @@
   ],
   "author": "budang",
   "license": "MIT",
+  "preferGlobal": true,
   "bugs": {
     "url": "https://github.com/budang/text-tailor/issues"
   },

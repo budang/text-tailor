@@ -87,7 +87,7 @@
   });
 
   // set up program variables
-  program.version('1.0.7');
+  program.version('1.0.10');
   program.usage('[options] <param1, param2, …, paramN>');
   program.option('-r, --recursive', 'evaluate files in nested directories');
   program.parse(process.argv);
